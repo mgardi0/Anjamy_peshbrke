@@ -53,14 +53,14 @@
             -webkit-backdrop-filter: blur(16px);
             border: 1px solid var(--glass-border); 
             border-radius: 24px; 
-            padding: 40px 20px;
+            padding: 40px 20px 20px 20px;
             width: 92%; max-width: 450px; 
-            height: 500px;
+            min-height: 500px;
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
             text-align: center; 
             display: flex; 
             flex-direction: column; 
-            justify-content: center;
+            justify-content: flex-start;
             align-items: center;
             position: relative;
         }
@@ -83,24 +83,31 @@
         .score-subtitle {
             font-size: 1.1rem;
             color: var(--primary-blue);
-            margin-bottom: 40px;
+            margin-bottom: 15px;
             font-weight: 600;
         }
 
+        /* بۆکسێکی تایبەت بۆ ناوەکان بۆ ئەوەی نەچێتە سەر نووسینەکانی تر */
+        .winner-container {
+            width: 100%;
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100px;
+        }
+
         .winner-name {
-            font-size: 2rem;
+            font-size: 2.2rem;
             font-weight: 800;
             background: linear-gradient(to right, #fff, #a3c2ff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             opacity: 0;
-            transform: translateY(30px) scale(0.9);
-            transition: opacity 0.6s ease, transform 0.6s ease;
-            position: absolute;
-            bottom: 100px;
-            width: 100%;
+            transform: translateY(20px) scale(0.95);
+            transition: opacity 0.8s ease, transform 0.8s ease;
             text-align: center;
-            left: 0;
+            line-height: 1.5;
         }
 
         .winner-name.show {
@@ -126,11 +133,12 @@
         <div id="placeTitle" class="place-title">چاوەڕێ بن...</div>
         <div id="scoreSubtitle" class="score-subtitle">ئەنجامەکان ڕادەگەیەنرێت</div>
         
-        <div id="winnerName" class="winner-name"></div>
+        <div class="winner-container">
+            <div id="winnerName" class="winner-name"></div>
+        </div>
     </div>
 
     <script>
-        // داتای ناوەکان و ئەنجامەکان بەپێی داواکارییەکەت
         const results = [
             {
                 place: "🥇 پلەی یەکەم",
@@ -184,14 +192,12 @@
         const winnerName = document.getElementById('winnerName');
 
         function showNextName() {
-            // ئەگەر هەموو ناوەکان تەواو بوون، لەسەرەتاوە دەست پێ دەکاتەوە یان پەیامێکی کۆتایی دەنووسێت
             if (currentCategory >= results.length) {
                 placeTitle.className = 'place-title';
                 placeTitle.innerHTML = "پیرۆزە لە هەمووان! 🎉";
                 scoreSubtitle.innerHTML = "هیوای سەرکەوتن بۆ گشت لایەک";
                 winnerName.innerHTML = "";
                 
-                // دوای ٥ چرکە دووبارە دەست پێدەکاتەوە
                 setTimeout(() => {
                     currentCategory = 0;
                     currentName = 0;
@@ -202,38 +208,32 @@
 
             const category = results[currentCategory];
             
-            // گۆڕینی تایتڵ و پلەکان
             placeTitle.innerHTML = category.place;
             placeTitle.className = `place-title ${category.placeClass}`;
             scoreSubtitle.innerHTML = category.score;
 
-            // لابردنی ناوی پێشوو بۆ ئەوەی ئەنیمەیشنی دیارنەمان بکات
             winnerName.classList.remove('show');
             
             setTimeout(() => {
-                // دانانی ناوی نوێ و نیشاندانی
                 winnerName.innerHTML = category.names[currentName];
                 winnerName.classList.add('show');
                 
                 setTimeout(() => {
-                    // شاردنەوەی ناوەکە
                     winnerName.classList.remove('show');
                     
-                    // ئامادەکردنی ناوی داهاتوو
                     currentName++;
                     if (currentName >= category.names.length) {
                         currentName = 0;
                         currentCategory++;
                     }
                     
-                    // کاتی نێوان شاردنەوەی ناوێک و دەرکەوتنی ناوی داهاتوو
-                    setTimeout(showNextName, 600); 
+                    // کاتی چاوەڕوانی پێش دەرکەوتنی ناوی داهاتوو (خاوتر کراوە)
+                    setTimeout(showNextName, 800); 
                     
-                }, 2500); // ئەو کاتەی کە ناوەکە لەسەر شاشە دەمێنێتەوە (٢.٥ چرکە)
-            }, 600); // کاتی چاوەڕوانی پێش دەرکەوتنی ناوەکە
+                }, 4000); // مانەوەی ناوەکە لەسەر شاشە (٤ چرکە)
+            }, 800); // کاتی هاتنە ناوەوە
         }
 
-        // دەستپێکردنی ئەنیمەیشنەکە دوای ١ چرکە لە کردنەوەی پەڕەکە
         setTimeout(showNextName, 1000);
 
     </script>
